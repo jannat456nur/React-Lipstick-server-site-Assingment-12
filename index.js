@@ -17,7 +17,7 @@ async function run() {
     try {
         await client.connect();
         console.log('Connected')
-        const database = client.db('ass-12')
+        const database = client.db('assingment-12')
         const servicesCollection = database.collection('services')
 
         //get api
@@ -26,6 +26,11 @@ async function run() {
             const services = await cursor.toArray();
             res.send(services)
         })
+        // app.get('/products', async (req, res) => {
+        //     const cursor = servicesCollection.find({})
+        //     const services = await cursor.toArray();
+        //     res.send(services)
+        // })
         // GET Single Service
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
