@@ -18,19 +18,20 @@ async function run() {
         await client.connect();
         console.log('Connected')
         const database = client.db('assingment-12')
-        const servicesCollection = database.collection('review')
+        const reviewCollection = database.collection('review')
+        const servicesCollection = database.collection('services')
 
         //get api
         app.get('/review', async (req, res) => {
+            const cursor = reviewCollection.find({})
+            const review = await cursor.toArray();
+            res.send(review)
+        })
+        app.get('/services', async (req, res) => {
             const cursor = servicesCollection.find({})
             const services = await cursor.toArray();
             res.send(services)
         })
-        // app.get('/products', async (req, res) => {
-        //     const cursor = servicesCollection.find({})
-        //     const services = await cursor.toArray();
-        //     res.send(services)
-        // })
         // GET Single Service
         app.get('/review/:id', async (req, res) => {
             const id = req.params.id;
