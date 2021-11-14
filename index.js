@@ -42,10 +42,10 @@ async function run() {
         })
         // //POST API
         app.post('/review', async (req, res) => {
-            const service = req.body;
-            console.log('hit the api', service)
+            const review = req.body;
+            console.log('hit the api', review)
 
-            const result = await servicesCollection.insertOne(service)
+            const result = await reviewCollection.insertOne(review)
             console.log(result);
             res.json(result)
         });
