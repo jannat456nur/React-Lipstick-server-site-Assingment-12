@@ -20,27 +20,58 @@ async function run() {
         const database = client.db('assingment-12')
         const reviewCollection = database.collection('review')
         const servicesCollection = database.collection('services')
+        const orderCollection = database.collection('order')
 
-        //get api
+        //get review
         app.get('/review', async (req, res) => {
             const cursor = reviewCollection.find({})
             const review = await cursor.toArray();
             res.send(review)
         })
+        //get services
         app.get('/services', async (req, res) => {
             const cursor = servicesCollection.find({})
             const services = await cursor.toArray();
             res.send(services)
         })
-        // GET Single Service
-        app.get('/review/:id', async (req, res) => {
-            const id = req.params.id;
-            console.log('getting specific service', id);
-            const query = { _id: ObjectId(id) };
-            const service = await servicesCollection.findOne(query);
-            res.json(service);
+
+
+        // Get Orders
+        app.get('/orders', async (req, res) => {
+            const email = req.query.email
+            let query = {}
+            if (email) {
+                query = { email: email }
+            }
+            const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.json(orders)
         })
-        // //POST API
+        // Post Orders
+        app.post('/orders', async (req, res) => {
+            const order = req.body
+            const ans = await orderCollection.insertOne(order)
+            res.json(ans)
+        })
+
+        // GET Single Service
+        // app.get('/review/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     console.log('getting specific service', id);
+        //     const query = { _id: ObjectId(id) };
+        //     const service = await servicesCollection.findOne(query);
+        //     res.json(service);
+        // })
+
+        // GET SPECIFIC PRODUCT
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id
+            console.log('getting id', id)
+            const query = { _id: ObjectId(id) }
+            const product = await orderCollection.findOne(query)
+            res.send(product)
+        })
+        // //POST review
         app.post('/review', async (req, res) => {
             const review = req.body;
             console.log('hit the api', review)
@@ -49,11 +80,12 @@ async function run() {
             console.log(result);
             res.json(result)
         });
-        //delete api
-        app.delete('/services/:id', async (req, res) => {
+
+        //delete orders
+        app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: objectId(id) };
-            const result = await servicesCollection.deleteOne(query)
+            const result = await orderCollection.deleteOne(query)
             res.json(result);
         });
     } finally {
