@@ -20,7 +20,7 @@ async function run() {
         const database = client.db('assingment-12')
         const reviewCollection = database.collection('review')
         const servicesCollection = database.collection('services')
-        const orderCollection = database.collection('order')
+        const orderCollection = database.collection('orders')
 
         //get review
         app.get('/review', async (req, res) => {
@@ -81,13 +81,40 @@ async function run() {
             res.json(result)
         });
 
+
+        //UPDATE API
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedUser = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: updatedUser.name,
+                    email: updatedUser.email
+                },
+            };
+            const result = await orderCollection.updateOne(filter, updateDoc, options)
+            console.log('updating', id)
+            res.json(result)
+        })
         //delete orders
+        // app.delete('/orders/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: objectId(id) };
+        //     const result = await orderCollection.deleteOne(query)
+        //     res.json(result);
+        // });
         app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: objectId(id) };
-            const result = await orderCollection.deleteOne(query)
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
+
+            console.log('deleting user with id ', result);
+
             res.json(result);
-        });
+        })
+
     } finally {
         // await client.close();
     }
