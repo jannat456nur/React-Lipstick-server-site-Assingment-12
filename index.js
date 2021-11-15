@@ -21,6 +21,7 @@ async function run() {
         const reviewCollection = database.collection('review')
         const servicesCollection = database.collection('services')
         const orderCollection = database.collection('orders')
+        const addproductsCollection = database.collection('addproducts')
 
         //get review
         app.get('/review', async (req, res) => {
@@ -44,6 +45,17 @@ async function run() {
                 query = { email: email }
             }
             const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.json(orders)
+        })
+        // Get addproducts
+        app.get('/addproducts', async (req, res) => {
+            const email = req.query.email
+            let query = {}
+            if (email) {
+                query = { email: email }
+            }
+            const cursor = addproductsCollection.find(query)
             const orders = await cursor.toArray()
             res.json(orders)
         })
@@ -77,6 +89,15 @@ async function run() {
             console.log('hit the api', review)
 
             const result = await reviewCollection.insertOne(review)
+            console.log(result);
+            res.json(result)
+        });
+        // //POST addproducts
+        app.post('/addproducts', async (req, res) => {
+            const addproducts = req.body;
+            console.log('hit the api', addproducts)
+
+            const result = await addproductsCollection.insertOne(review)
             console.log(result);
             res.json(result)
         });
